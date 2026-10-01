@@ -1,0 +1,87 @@
+.footer {
+  padding: 90px 0;
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 30px;
+}
+
+.grid a:hover {
+  color: var(--color-yellow);
+}
+
+.brand {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--ls-h3);
+}
+
+.aboutText {
+  padding-top: 24px;
+}
+
+/* Column headings share one style; offset matches the brand's cap height */
+.heading,
+.menuHeading {
+  padding-top: 6px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h5);
+  line-height: var(--lh-h5);
+  letter-spacing: var(--ls-h5);
+}
+
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 22px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: flex-start;
+  transition: color 0.2s;
+}
+
+.icon {
+  flex-shrink: 0;
+  margin: 4.4px 15px 0 0;
+}
+
+.menu {
+  padding-top: 22px;
+}
+
+.submenu {
+  padding-top: 3.75px;
+  padding-left: 20px;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .about {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding: 60px 0;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .aboutText {
+    padding-top: 20px;
+  }
+}

@@ -1,0 +1,74 @@
+.section {
+  padding: 90px 0;
+  background: var(--color-white);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 30px;
+}
+
+/* Alternate rows put the text first, as in the design */
+.reverse > :first-child {
+  order: 2;
+}
+
+.name {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-h4);
+  letter-spacing: var(--ls-h4);
+  color: var(--color-navy);
+}
+
+.description {
+  padding-top: 15px;
+}
+
+.specs {
+  margin-top: 24.75px;
+}
+
+.specs li::before {
+  content: "• ";
+}
+
+.specs strong {
+  font-weight: var(--fw-semibold);
+}
+
+.cta {
+  margin-top: 30px;
+}
+
+@media (max-width: 1024px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .reverse > :first-child {
+    order: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 50px 0;
+  }
+
+  .list {
+    gap: 50px;
+  }
+
+  .cta {
+    width: 100%;
+  }
+}

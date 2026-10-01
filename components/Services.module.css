@@ -1,0 +1,50 @@
+.section {
+  padding: 60px 0;
+  background: var(--color-white);
+}
+
+.title {
+  padding-top: 7.5px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 15px;
+}
+
+.imageWrap {
+  position: relative;
+  height: 250px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.cardTitle {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h5);
+  line-height: var(--lh-h5);
+  letter-spacing: var(--ls-h5);
+  color: var(--color-navy);
+}
+
+.cardText {
+  padding-top: 7.5px;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

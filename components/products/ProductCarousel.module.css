@@ -1,0 +1,88 @@
+.carousel {
+  position: relative;
+  min-width: 0;
+  padding: 15px 15px 30px;
+}
+
+.viewport {
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.track {
+  display: flex;
+  transition: transform 0.45s ease;
+}
+
+.slide {
+  position: relative;
+  flex: 0 0 100%;
+  aspect-ratio: 563 / 317;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.arrow {
+  position: absolute;
+  top: calc(50% - 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #efefef;
+  color: #333;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.arrow:hover {
+  background: var(--color-yellow);
+  color: var(--color-navy);
+}
+
+.prev {
+  left: 0;
+}
+
+.next {
+  right: 0;
+}
+
+.dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: #333;
+  opacity: 0.2;
+  cursor: pointer;
+  transition: opacity 0.2s, width 0.2s;
+}
+
+.dotActive {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    transition: none;
+  }
+}

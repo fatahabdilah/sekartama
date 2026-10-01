@@ -1,0 +1,83 @@
+import { SYSTEM_PROMPT } from "@/lib/assistant";
+
+type ChatMessage = { role: "user" | "assistant"; content: string };
+
+const MAX_MESSAGES = 20;
+const MAX_CHARS = 1000;
+const RATE_LIMIT = 20; // requests per IP per window
+const RATE_WINDOW_MS = 60_000;
+
+// Best-effort, per-instance limiter to keep the API key from being abused.
+const hits = new Map<string, { count: number; resetAt: number }>();
+
+function rateLimited(ip: string) {
+  const now = Date.now();
+  const entry = hits.get(ip);
+  if (!entry || entry.resetAt < now) {
+    hits.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > RATE_LIMIT;
+}
+
+function parseMessages(body: unknown): ChatMessage[] | null {
+  const messages = (body as { messages?: unknown })?.messages;
+  if (!Array.isArray(messages) || messages.length === 0 || messages.length > MAX_MESSAGES) return null;
+  const valid = (messages as Partial<ChatMessage>[]).every(
+    (m) =>
+      (m?.role === "user" || m?.role === "assistant") &&
+      typeof m.content === "string" &&
+      m.content.trim().length > 0 &&
+      m.content.length <= MAX_CHARS,
+  );
+  return valid && messages.at(-1).role === "user" ? (messages as ChatMessage[]) : null;
+}
+
+export async function POST(request: Request) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return Response.json({ error: "not_configured" }, { status: 503 });
+
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  if (rateLimited(ip)) return Response.json({ error: "rate_limited" }, { status: 429 });
+
+  const messages = parseMessages(await request.json().catch(() => null));
+  if (!messages) return Response.json({ error: "invalid_request" }, { status: 400 });
+
+  // Gemini expects the conversation to open with a user turn.
+  const firstUser = messages.findIndex((m) => m.role === "user");
+  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: messages.slice(firstUser).map((m) => ({
+          role: m.role === "assistant" ? "model" : "user",
+          parts: [{ text: m.content }],
+        })),
+        generationConfig: { temperature: 0.4, maxOutputTokens: 1024 },
+      }),
+      signal: AbortSignal.timeout(25_000),
+    });
+
+    if (!res.ok) {
+      console.error("Gemini error", res.status, await res.text());
+      return Response.json({ error: "upstream_error" }, { status: 502 });
+    }
+
+    const data = await res.json();
+    const reply: string | undefined = data.candidates?.[0]?.content?.parts
+      ?.map((part: { text?: string }) => part.text ?? "")
+      .join("")
+      .trim();
+
+    if (!reply) return Response.json({ error: "empty_reply" }, { status: 502 });
+    return Response.json({ reply });
+  } catch (error) {
+    console.error("Gemini request failed", error);
+    return Response.json({ error: "upstream_error" }, { status: 502 });
+  }
+}

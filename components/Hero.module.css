@@ -1,0 +1,77 @@
+.hero {
+  position: relative;
+  min-height: 684px;
+  overflow: hidden;
+}
+
+.bg {
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(33, 45, 69, 0.95), rgba(33, 45, 69, 0.7));
+}
+
+.content {
+  position: relative;
+  padding-top: 150px;
+  padding-bottom: 60px;
+}
+
+.kicker {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-h4);
+  letter-spacing: var(--ls-h4);
+  color: var(--color-yellow);
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 18px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  color: var(--color-white);
+}
+
+.headingLight {
+  font-weight: var(--fw-regular);
+}
+
+.lead {
+  max-width: 1080px;
+  margin-top: 20px;
+  color: var(--color-white);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px;
+  margin-top: 30px;
+}
+
+.action {
+  min-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 0;
+  }
+
+  .content {
+    padding-top: 110px;
+    padding-bottom: 150px;
+  }
+
+  .actions {
+    gap: 16px;
+  }
+}

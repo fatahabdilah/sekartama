@@ -1,0 +1,161 @@
+.section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.newsletter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+  min-height: 540.6px;
+  padding: 60px;
+  background: var(--color-navy);
+}
+
+.newsletterTitle {
+  color: var(--color-white);
+}
+
+.newsletterText {
+  padding-top: 15px;
+  color: var(--color-white);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.input {
+  width: 100%;
+  height: 41.35px;
+  padding: 7.5px;
+  border: 0.8px solid var(--color-input-border);
+  border-radius: 0;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  font-size: 15px;
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--color-text);
+}
+
+.input:focus {
+  border-color: var(--color-yellow);
+}
+
+.submit {
+  width: 226.675px;
+  height: 45px;
+  margin-top: 20px;
+  padding: 0 15px;
+  white-space: nowrap;
+}
+
+.success {
+  margin-top: 12px;
+  color: var(--color-yellow);
+}
+
+.faq {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+  padding: 60px;
+}
+
+.faqEyebrow {
+  color: var(--color-yellow);
+}
+
+.faqTitle {
+  padding-top: 15px;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.tab {
+  border: 0.8px solid var(--color-border-strong);
+  border-bottom: 0;
+  border-radius: 1px;
+}
+
+.question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px;
+  border: 0;
+  background: transparent;
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+  color: var(--color-navy);
+  text-align: left;
+  cursor: pointer;
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-left: 10px;
+  transition: transform 0.2s;
+}
+
+.iconOpen {
+  transform: rotate(45deg);
+}
+
+.answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.answer > div {
+  overflow: hidden;
+}
+
+.answer p {
+  padding: 0 20px 20px;
+}
+
+.answerOpen {
+  grid-template-rows: 1fr;
+}
+
+@media (max-width: 1024px) {
+  .section {
+    grid-template-columns: 1fr;
+  }
+
+  .newsletter {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 40px 0;
+  }
+
+  .newsletter,
+  .faq {
+    padding: 40px 20px;
+  }
+
+  .submit {
+    width: 100%;
+  }
+}

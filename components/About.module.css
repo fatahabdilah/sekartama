@@ -1,0 +1,99 @@
+.section {
+  background: var(--color-white);
+}
+
+/* Cards overlap the hero by 90px, as in the design */
+.row {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: -90px;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px;
+  background: var(--color-yellow);
+}
+
+.title {
+  padding-top: 15px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--ls-h1);
+  color: var(--color-navy);
+}
+
+.text {
+  padding-top: 15px;
+}
+
+.cta {
+  margin-top: 15px;
+}
+
+.statsCard {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: var(--color-white);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: minmax(202.05px, auto);
+  width: 100%;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  border-right: 0.8px solid var(--color-border);
+  border-bottom: 0.8px solid var(--color-border);
+}
+
+.statInner {
+  width: 100%;
+  max-width: 220px;
+  min-height: 116.5px;
+}
+
+.value {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  letter-spacing: var(--ls-h2);
+  color: var(--color-navy);
+}
+
+.label {
+  padding-top: 12px;
+}
+
+@media (max-width: 1024px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .row {
+    padding: 0;
+  }
+
+  .intro {
+    padding: 30px 20px;
+  }
+
+  .stat {
+    padding: 20px;
+  }
+}

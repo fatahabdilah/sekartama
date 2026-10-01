@@ -1,0 +1,77 @@
+.section {
+  padding: 90px 0 20px;
+  background: var(--color-white);
+}
+
+.header {
+  text-align: center;
+}
+
+.eyebrow {
+  color: var(--color-yellow);
+}
+
+.title {
+  padding-top: 15px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.card {
+  position: relative;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+
+.card:hover .image {
+  transform: scale(1.05);
+}
+
+.caption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 40px 15px 15px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
+  color: var(--color-white);
+}
+
+.name {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-h4);
+  letter-spacing: var(--ls-h4);
+}
+
+.location {
+  padding-top: 5px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding-top: 60px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    margin-top: 30px;
+  }
+}
