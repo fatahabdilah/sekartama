@@ -1,10 +1,12 @@
 export type Project = {
+  id?: string;
   name: string;
   location: string;
   image: string;
 };
 
-export const projects: Project[] = [
+// Fallback content used when Supabase isn't configured, and the source of supabase/seed.sql.
+export const defaultProjects: Project[] = [
   { name: "Cluster Cileubut", location: "Kecamatan Cilebut, Kabupaten Bogor", image: "/images/projects/cileubut.png" },
   { name: "Villa Puncak Bogor", location: "Kecamatan Cisarua, Kabupaten Bogor", image: "/images/projects/villa-puncak.png" },
   {

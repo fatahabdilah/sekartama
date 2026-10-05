@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Post } from "@/lib/posts";
 import styles from "./PostCard.module.css";
 
@@ -10,12 +11,11 @@ function commentLabel(count: number) {
 }
 
 export default function PostCard({ post }: { post: Post }) {
-  // Article pages aren't designed yet, so the links are placeholders.
-  const href = "#";
+  const href = `/blog/${post.slug}`;
 
   return (
     <article className={styles.card}>
-      <a href={href} className={styles.imageLink} tabIndex={-1} aria-hidden="true">
+      <Link href={href} className={styles.imageLink} tabIndex={-1} aria-hidden="true">
         <Image
           src={post.image.src}
           alt=""
@@ -24,9 +24,9 @@ export default function PostCard({ post }: { post: Post }) {
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 390px"
           className={styles.image}
         />
-      </a>
+      </Link>
       <h3 className={styles.title}>
-        <a href={href}>{post.title}</a>
+        <Link href={href}>{post.title}</Link>
       </h3>
       <p className={styles.meta}>
         <time dateTime={post.date}>{dateFormat.format(new Date(post.date))}</time>
@@ -34,9 +34,9 @@ export default function PostCard({ post }: { post: Post }) {
         <span>{commentLabel(post.comments)}</span>
       </p>
       <p className={styles.excerpt}>{post.excerpt}</p>
-      <a href={href} className={`btn btn-yellow ${styles.cta}`}>
+      <Link href={href} className={`btn btn-yellow ${styles.cta}`}>
         Baca Selengkapnya
-      </a>
+      </Link>
     </article>
   );
 }

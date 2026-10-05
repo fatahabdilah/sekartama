@@ -1,4 +1,7 @@
-import { SYSTEM_PROMPT } from "@/lib/assistant";
+import { buildSystemPrompt } from "@/lib/assistant";
+import { getChatConfig, getContact, getProductCategories, getProjects } from "@/lib/data";
+import { DEFAULT_GEMINI_MODEL } from "@/lib/gemini-models";
+import { getGeminiApiKey } from "@/lib/secrets";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -35,8 +38,14 @@ function parseMessages(body: unknown): ChatMessage[] | null {
 }
 
 export async function POST(request: Request) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return Response.json({ error: "not_configured" }, { status: 503 });
+  const [apiKey, config, categories, projects, contact] = await Promise.all([
+    getGeminiApiKey(),
+    getChatConfig(),
+    getProductCategories(),
+    getProjects(),
+    getContact(),
+  ]);
+  if (!apiKey || !config.enabled) return Response.json({ error: "not_configured" }, { status: 503 });
 
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
   if (rateLimited(ip)) return Response.json({ error: "rate_limited" }, { status: 429 });
@@ -46,19 +55,19 @@ export async function POST(request: Request) {
 
   // Gemini expects the conversation to open with a user turn.
   const firstUser = messages.findIndex((m) => m.role === "user");
-  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const model = config.model || process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL;
 
   try {
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        systemInstruction: { parts: [{ text: buildSystemPrompt(config, categories, projects, contact) }] },
         contents: messages.slice(firstUser).map((m) => ({
           role: m.role === "assistant" ? "model" : "user",
           parts: [{ text: m.content }],
         })),
-        generationConfig: { temperature: 0.4, maxOutputTokens: 1024 },
+        generationConfig: { temperature: config.temperature, maxOutputTokens: 1024 },
       }),
       signal: AbortSignal.timeout(25_000),
     });

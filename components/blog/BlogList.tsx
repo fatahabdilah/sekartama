@@ -7,11 +7,13 @@ type BlogListProps = {
   posts: Post[];
   page: number;
   totalPages: number;
+  /** Rendered under the grid, e.g. a "see all" link. */
+  children?: React.ReactNode;
 };
 
 const pageHref = (page: number) => (page === 1 ? "/blog" : `/blog/page/${page}`);
 
-export default function BlogList({ posts, page, totalPages }: BlogListProps) {
+export default function BlogList({ posts, page, totalPages, children }: BlogListProps) {
   return (
     <section className={`section-wide ${styles.section}`}>
       <div className="container">
@@ -48,6 +50,7 @@ export default function BlogList({ posts, page, totalPages }: BlogListProps) {
             )}
           </nav>
         )}
+        {children}
       </div>
     </section>
   );

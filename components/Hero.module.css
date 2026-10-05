@@ -72,6 +72,12 @@
   }
 
   .actions {
+    flex-direction: column;
     gap: 16px;
+  }
+
+  .action {
+    width: 100%;
+    min-width: 0;
   }
 }

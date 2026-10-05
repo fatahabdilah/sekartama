@@ -1,16 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { contact, navItems } from "@/lib/site";
+import type { Contact, NavItem } from "@/lib/site";
 import styles from "./Footer.module.css";
 
-const contactItems = [
-  { icon: "/icons/location.svg", label: contact.address },
-  { icon: "/icons/email.svg", label: contact.email, href: `mailto:${contact.email}` },
-  { icon: "/icons/phone.svg", label: contact.phone, href: contact.whatsappUrl },
-  { icon: "/icons/instagram.svg", label: contact.instagram, href: contact.instagramUrl },
-];
+export default function Footer({ contact, navItems }: { contact: Contact; navItems: NavItem[] }) {
+  const contactItems = [
+    { icon: "/icons/location.svg", label: contact.address },
+    { icon: "/icons/email.svg", label: contact.email, href: `mailto:${contact.email}` },
+    { icon: "/icons/phone.svg", label: contact.phone, href: contact.whatsappUrl },
+    { icon: "/icons/instagram.svg", label: contact.instagramHandle, href: contact.instagramUrl },
+  ];
 
-export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.grid}`}>

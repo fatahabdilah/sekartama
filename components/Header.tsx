@@ -3,15 +3,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { navItems, type NavItem } from "@/lib/site";
+import { useEffect, useState } from "react";
+import type { NavItem } from "@/lib/site";
 import styles from "./Header.module.css";
 
-export default function Header() {
+export default function Header({ navItems }: { navItems: NavItem[] }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const matches = (href: string) => href === pathname || (href !== "/" && pathname.startsWith(`${href}/`));
   const isActive = (item: NavItem) => matches(item.href) || Boolean(item.children?.some((child) => matches(child.href)));
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => event.key === "Escape" && setMenuOpen(false);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
 
   return (
     <header className={styles.header}>
@@ -22,8 +29,8 @@ export default function Header() {
 
         <button
           type="button"
-          className={styles.toggle}
-          aria-label="Buka menu"
+          className={`${styles.toggle} ${menuOpen ? styles.toggleOpen : ""}`}
+          aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((open) => !open)}
         >
@@ -57,7 +64,11 @@ export default function Header() {
                   <ul className={styles.submenu}>
                     {item.children.map((child) => (
                       <li key={child.label}>
-                        <Link href={child.href} onClick={() => setMenuOpen(false)}>
+                        <Link
+                          href={child.href}
+                          aria-current={child.href === pathname ? "page" : undefined}
+                          onClick={() => setMenuOpen(false)}
+                        >
                           {child.label}
                         </Link>
                       </li>

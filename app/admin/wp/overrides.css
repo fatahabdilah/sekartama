@@ -1,0 +1,246 @@
+/* Admin-only additions, loaded after the vendored WordPress stylesheets. */
+
+/* html.wp-toolbar: room for the fixed admin bar. */
+.wp-root.wp-toolbar {
+  padding-top: 32px;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+@media screen and (max-width: 782px) {
+  .wp-root.wp-toolbar {
+    padding-top: 46px;
+  }
+}
+
+/* Below 600px WordPress makes the admin bar position:absolute; offset it past the padding above #wpwrap. */
+@media screen and (max-width: 600px) {
+  .wp-root.wp-toolbar #wpadminbar {
+    top: -46px;
+  }
+}
+
+/* Keyboard access to admin-bar and admin-menu flyouts (WordPress does this with JS). */
+#wpadminbar li.menupop:focus-within > .ab-sub-wrapper {
+  display: block;
+}
+
+#adminmenu li.wp-has-submenu.wp-not-current-submenu:hover > .wp-submenu,
+#adminmenu li.wp-has-submenu.wp-not-current-submenu:focus-within > .wp-submenu {
+  top: -1px;
+}
+
+#adminmenu li.wp-has-submenu.wp-not-current-submenu:hover > a.menu-top,
+#adminmenu li.wp-has-submenu.wp-not-current-submenu:focus-within > a.menu-top {
+  position: relative;
+  background-color: #1d2327;
+  color: #72aee6;
+}
+
+.folded #adminmenu li.wp-has-submenu.wp-not-current-submenu:hover > .wp-submenu,
+.folded #adminmenu li.wp-has-submenu.wp-not-current-submenu:focus-within > .wp-submenu {
+  top: 0;
+  left: 36px;
+}
+
+/* Login logo: the site logo in place of the WordPress mark. */
+.login h1 a {
+  width: 100%;
+  height: 84px;
+  background-image: url(/images/logo-large.png);
+  background-size: contain;
+  background-position: center;
+}
+
+/*
+ * Classic editor: the Visual tab hosts a Tiptap editor instead of TinyMCE's iframe. The TinyMCE skin resets every
+ * element under .mce-container (nowrap, normal weight, 14px...) and edit.css styles #poststuff h2, so the content area is reverted to browser
+ * defaults first — the isolation the iframe gives in wp-admin — then styled like wp-includes/css/wp-content.css.
+ */
+#wpbody .mce-edit-area .ProseMirror,
+#wpbody .mce-edit-area .ProseMirror * {
+  all: revert;
+}
+
+#wpbody .mce-edit-area .ProseMirror {
+  display: block;
+  min-height: 360px;
+  margin: 0;
+  padding: 9px 10px;
+  outline: none;
+  color: #1e1e1e;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue",
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  cursor: text;
+}
+
+#wpbody .mce-edit-area .ProseMirror :is(h1, h2, h3, h4, h5, h6) {
+  color: #1e1e1e;
+  font-family: inherit;
+  line-height: 1.4;
+}
+
+#wpbody .mce-edit-area .ProseMirror h2 {
+  font-size: 1.5em;
+}
+
+#wpbody .mce-edit-area .ProseMirror h3 {
+  font-size: 1.17em;
+}
+
+#wpbody .mce-edit-area .ProseMirror h4 {
+  font-size: 1em;
+}
+
+#wpbody .mce-edit-area .ProseMirror :is(p, ul, ol, blockquote) {
+  margin: 1em 0;
+}
+
+#wpbody .mce-edit-area .ProseMirror :is(ul, ol) {
+  padding-left: 40px;
+}
+
+#wpbody .mce-edit-area .ProseMirror li > p {
+  margin: 0;
+}
+
+#wpbody .mce-edit-area .ProseMirror blockquote {
+  margin-left: 0;
+  padding-left: 1em;
+  border-left: 4px solid #949494;
+}
+
+#wpbody .mce-edit-area .ProseMirror img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#wpbody .mce-edit-area .ProseMirror img.ProseMirror-selectednode {
+  outline: 2px solid #72aee6;
+}
+
+#wpbody .mce-edit-area .ProseMirror a {
+  color: #0073aa;
+  text-decoration: underline;
+}
+
+.wp-root .mce-listbox select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.wp-root .wp-editor-area {
+  display: block;
+  width: 100%;
+  min-height: 360px;
+  box-sizing: border-box;
+}
+
+/* Thumbnails in list tables (the image column WordPress plugins add). */
+.wp-list-table .column-thumb {
+  width: 60px;
+}
+
+.wp-list-table .column-thumb img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+/* Product gallery postbox. */
+.sekar-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.sekar-gallery li {
+  position: relative;
+  width: 80px;
+  margin: 0;
+}
+
+.sekar-gallery img {
+  display: block;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border: 1px solid #c3c4c7;
+}
+
+.sekar-gallery .gallery-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2px;
+}
+
+.sekar-gallery .gallery-actions button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #2271b1;
+  cursor: pointer;
+}
+
+.sekar-gallery .gallery-actions button:disabled {
+  color: #a7aaad;
+  cursor: default;
+}
+
+.sekar-gallery .gallery-actions .remove {
+  color: #b32d2e;
+}
+
+/* At a Glance icons for the custom content types. */
+#dashboard_right_now .product-count a:before {
+  content: "\f312";
+}
+
+#dashboard_right_now .project-count a:before {
+  content: "\f322";
+}
+
+/* Row actions and the Publish box use buttons (forms) where WordPress uses links. */
+.row-actions form,
+#delete-action form {
+  display: inline;
+}
+
+.row-actions .trash .button-link,
+#delete-action .submitdelete,
+.edit-tag-actions #delete-link .delete {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #b32d2e;
+  font: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+.row-actions .trash .button-link:hover,
+#delete-action .submitdelete:hover,
+.edit-tag-actions #delete-link .delete:hover {
+  color: #b32d2e;
+  border: none;
+  text-decoration: underline;
+}
+
+#delete-action .submitdelete,
+.edit-tag-actions #delete-link .delete {
+  text-decoration: underline;
+}
+

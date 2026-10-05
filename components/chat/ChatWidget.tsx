@@ -2,23 +2,18 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
-import { contact } from "@/lib/site";
 import styles from "./ChatWidget.module.css";
 
 type Message = { role: "user" | "assistant"; content: string; failed?: boolean };
 
-const GREETING: Message = {
-  role: "assistant",
-  content: "Halo! Saya Sekar, asisten AI resmi dari CV. SEKAR TAMA CONTRACTION yang siap membantu Anda.",
-};
-const FALLBACK = `Maaf, Sekar sedang tidak bisa menjawab. Silakan hubungi kami langsung via WhatsApp di ${contact.phone}.`;
 const RATE_LIMITED = "Pesan Anda terlalu banyak dalam waktu singkat. Mohon tunggu sebentar lalu coba lagi.";
 const MAX_INPUT_HEIGHT = 110;
 const HISTORY_LIMIT = 20;
 
-export default function ChatWidget() {
+export default function ChatWidget({ greeting, phone }: { greeting: string; phone: string }) {
+  const fallback = `Maaf, Sekar sedang tidak bisa menjawab. Silakan hubungi kami langsung via WhatsApp di ${phone}.`;
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([GREETING]);
+  const [messages, setMessages] = useState<Message[]>([{ role: "assistant", content: greeting }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
@@ -58,7 +53,7 @@ export default function ChatWidget() {
 
     // The greeting and failed replies are UI-only, so they're not sent to the model.
     const history = next
-      .filter((m) => m !== GREETING && !m.failed)
+      .filter((m, index) => index > 0 && !m.failed)
       .slice(-HISTORY_LIMIT)
       .map(({ role, content }) => ({ role, content }));
 
@@ -70,13 +65,13 @@ export default function ChatWidget() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.reply) {
-        const content = res.status === 429 ? RATE_LIMITED : FALLBACK;
+        const content = res.status === 429 ? RATE_LIMITED : fallback;
         setMessages((prev) => [...prev, { role: "assistant", content, failed: true }]);
       } else {
         setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
       }
     } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: FALLBACK, failed: true }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: fallback, failed: true }]);
     } finally {
       setLoading(false);
     }

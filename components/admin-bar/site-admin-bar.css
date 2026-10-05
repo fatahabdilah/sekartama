@@ -1,0 +1,21 @@
+/* Front-end admin bar: WordPress adds `html { margin-top: 32px }` (46px on small screens). */
+html.admin-bar-on {
+  --admin-bar-height: 32px;
+  margin-top: 32px !important;
+}
+
+@media screen and (max-width: 782px) {
+  html.admin-bar-on {
+    --admin-bar-height: 46px;
+    margin-top: 46px !important;
+  }
+}
+
+/* WordPress keeps the bar fixed on the front end down to 600px; the site header is fixed too, so keep it fixed. */
+html.admin-bar-on #wpadminbar {
+  position: fixed;
+}
+
+#wpadminbar li.menupop:focus-within > .ab-sub-wrapper {
+  display: block;
+}

@@ -59,11 +59,6 @@
   white-space: nowrap;
 }
 
-.success {
-  margin-top: 12px;
-  color: var(--color-yellow);
-}
-
 .faq {
   display: flex;
   flex-direction: column;

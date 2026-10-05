@@ -1,0 +1,65 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  color: var(--color-text);
+}
+
+.content :is(h2, h3, h4) {
+  margin-top: 12px;
+  font-weight: var(--fw-semibold);
+  color: var(--color-navy);
+}
+
+.content h2 {
+  font-size: var(--fs-h4);
+  line-height: var(--lh-h4);
+  letter-spacing: var(--ls-h4);
+}
+
+.content :is(h3, h4) {
+  font-size: var(--fs-h5);
+  line-height: var(--lh-h5);
+  letter-spacing: var(--ls-h5);
+}
+
+.content :is(ul, ol) {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 20px;
+}
+
+.content ul {
+  list-style: disc;
+}
+
+.content ol {
+  list-style: decimal;
+}
+
+.content :is(strong, b) {
+  font-weight: var(--fw-semibold);
+  color: var(--color-navy);
+}
+
+.content a {
+  color: var(--color-navy);
+  text-decoration: underline;
+}
+
+.content blockquote {
+  padding-left: 16px;
+  border-left: 4px solid var(--color-yellow);
+  font-style: italic;
+}
+
+.content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.content hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+}

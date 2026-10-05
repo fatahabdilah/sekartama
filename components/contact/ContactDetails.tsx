@@ -1,7 +1,7 @@
-import { contact, mapEmbedUrl } from "@/lib/site";
+import type { Contact } from "@/lib/site";
 import styles from "./ContactDetails.module.css";
 
-export default function ContactDetails() {
+export default function ContactDetails({ contact }: { contact: Contact }) {
   return (
     <section className={`section-wide ${styles.section}`}>
       <div className="container">
@@ -37,7 +37,7 @@ export default function ContactDetails() {
 
           <iframe
             className={styles.map}
-            src={mapEmbedUrl}
+            src={contact.mapEmbedUrl}
             title="Lokasi CV. SEKAR TAMA CONTRACTION di Google Maps"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import ChatWidget from "@/components/chat/ChatWidget";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import "./globals.css";
 
 // Self-hosted (latin subset from Google Fonts) so builds don't depend on fonts.gstatic.com.
@@ -33,12 +30,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id" className={`${poppins.variable} ${openSans.variable}`}>
-      <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <ChatWidget />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -1,0 +1,33 @@
+/*
+ * Undoes the site's global reset (app/globals.css) inside the admin, so the vendored WordPress stylesheets see
+ * browser defaults as they do in wp-admin. Imported before the WordPress CSS, so every WordPress rule wins.
+ */
+
+:where(.wp-root) *,
+:where(.wp-root) *::before,
+:where(.wp-root) *::after {
+  box-sizing: content-box;
+}
+
+:where(.wp-root) :is(h1, h2, h3, h4, p, ul, ol) {
+  margin: revert;
+}
+
+:where(.wp-root) :is(ul, ol) {
+  padding: revert;
+  list-style: revert;
+}
+
+:where(.wp-root) a {
+  color: revert;
+  text-decoration: revert;
+}
+
+:where(.wp-root) img {
+  display: revert;
+}
+
+:where(.wp-root) :is(button, input, select, textarea) {
+  font: revert;
+}
+

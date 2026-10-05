@@ -4,12 +4,15 @@ export type Post = {
   date: string;
   comments: number;
   excerpt: string;
+  /** Full article body; paragraphs separated by blank lines. */
+  content: string;
   image: { src: string; width: number; height: number };
 };
 
 export const POSTS_PER_PAGE = 6;
 
-export const posts: Post[] = [
+// Fallback content used when Supabase isn't configured, and the source of supabase/seed.sql.
+export const defaultPosts: Omit<Post, "content">[] = [
   {
     slug: "kenapa-kusen-upvc-menjadi-tren",
     title: "“Kenapa Kusen UPVC Menjadi Tren dalam Dunia Konstruksi”",
@@ -62,5 +65,37 @@ export const posts: Post[] = [
     excerpt:
       "Kusen UPVC: Pilihan Pintar untuk Efisiensi Energi dan Keamanan Rumah Dalam dunia konstruksi modern, pemilihan…",
     image: { src: "/images/blog/kusen-upvc-efisiensi-energi.png", width: 768, height: 512 },
+  },
+  {
+    slug: "kusen-upvc-vs-kusen-aluminium",
+    title: "Kusen UPVC vs Kusen Alumunium: Mana yang Lebih Unggul untuk Hunian Anda?",
+    date: "2025-01-30",
+    comments: 0,
+    excerpt: "Kusen UPVC vs Kusen Alumunium: Mana yang Lebih Unggul untuk Hunian Anda? Ketika membangun atau…",
+    image: { src: "/images/blog/kusen-upvc-vs-kusen-aluminium.jpg", width: 633, height: 346 },
+  },
+  {
+    slug: "kusen-upvc-tahan-cuaca-lebih-aman",
+    title: "Kusen UPVC: ” Solusi Tahan Cuaca dan Lebih Aman untuk Rumah Anda “",
+    date: "2025-01-30",
+    comments: 0,
+    excerpt: "Kusen UPVC: Solusi Tahan Cuaca dan Lebih Aman untuk Rumah Anda Kusen UPVC (Unplasticized Polyvinyl…",
+    image: { src: "/images/blog/kusen-upvc-tahan-cuaca-lebih-aman.jpg", width: 736, height: 981 },
+  },
+  {
+    slug: "mengenal-jendela-upvc",
+    title: "Mengenal Jendela UPVC dan Keunggulannya",
+    date: "2025-01-28",
+    comments: 0,
+    excerpt: "Jendela UPVC (Unplasticized Polyvinyl Chloride) semakin menjadi pilihan favorit untuk berbagai…",
+    image: { src: "/images/blog/mengenal-jendela-upvc.jpg", width: 728, height: 410 },
+  },
+  {
+    slug: "mengenal-pintu-upvc",
+    title: "Mengenal Pintu UPVC: Keunggulan dan Manfaatnya",
+    date: "2025-01-27",
+    comments: 0,
+    excerpt: "Pintu UPVC (Unplasticized Polyvinyl Chloride) semakin populer di kalangan masyarakat modern.…",
+    image: { src: "/images/blog/mengenal-pintu-upvc.jpg", width: 625, height: 469 },
   },
 ];

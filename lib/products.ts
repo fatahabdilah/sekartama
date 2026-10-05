@@ -1,4 +1,5 @@
 export type Product = {
+  id?: string;
   name: string;
   description: string;
   price: string;
@@ -15,7 +16,8 @@ export type ProductCategory = {
 
 const images = (prefix: string) => [1, 2, 3].map((n) => `/images/products/${prefix}-${n}.png`);
 
-export const productCategories: ProductCategory[] = [
+// Fallback content used when Supabase isn't configured, and the source of supabase/seed.sql.
+export const defaultProductCategories: ProductCategory[] = [
   {
     slug: "pintu-upvc",
     title: "Pintu UPVC",
@@ -104,7 +106,3 @@ export const productCategories: ProductCategory[] = [
     ],
   },
 ];
-
-export function getProductCategory(slug: string) {
-  return productCategories.find((category) => category.slug === slug);
-}

@@ -13,7 +13,7 @@ export default function ProjectGrid({ projects }: { projects: Project[] }) {
 
         <ul className={styles.grid}>
           {projects.map((project) => (
-            <li key={project.name} className={styles.card}>
+            <li key={project.id ?? project.name} className={styles.card}>
               <Image
                 src={project.image}
                 alt={project.name}
