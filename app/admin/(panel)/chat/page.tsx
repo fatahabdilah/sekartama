@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import ChatStatusNotice from "@/components/admin/wp/ChatStatusNotice";
 import SubmitButton from "@/components/admin/wp/SubmitButton";
+import TestConnectionForm from "@/components/admin/wp/TestConnectionForm";
 import WpForm from "@/components/admin/wp/WpForm";
 import { requireAdmin } from "@/lib/admin";
 import { defaultChatConfig, type ChatConfig } from "@/lib/assistant";
@@ -27,6 +29,7 @@ export default async function AdminChatPage() {
   return (
     <div className="wrap">
       <h1>Chat AI Settings</h1>
+      <ChatStatusNotice supabase={supabase} showOk />
 
       {!isServiceConfigured && (
         <div className="notice notice-warning">
@@ -43,7 +46,7 @@ export default async function AdminChatPage() {
       )}
 
       <WpForm action={saveChat} settings>
-        <p>The product list, projects, and contact details are added to the assistant automatically from the site data.</p>
+        <p>Settings for the chat assistant shown in the corner of every page.</p>
         <table className="form-table" role="presentation">
           <tbody>
             <tr>
@@ -88,32 +91,62 @@ export default async function AdminChatPage() {
             </tr>
             <tr>
               <th scope="row">
-                <label htmlFor="greeting">Greeting</label>
+                <label htmlFor="botName">Bot name</label>
               </th>
               <td>
-                <textarea name="greeting" id="greeting" rows={3} cols={50} className="large-text" defaultValue={chat.greeting} required />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <label htmlFor="companyInfo">Company information</label>
-              </th>
-              <td>
-                <textarea name="companyInfo" id="companyInfo" rows={12} cols={50} className="large-text code" defaultValue={chat.companyInfo} aria-describedby="company-description" />
-                <p className="description" id="company-description">
-                  What the assistant may say about the company and its services.
+                <input name="botName" type="text" id="botName" defaultValue={chat.botName} className="regular-text" required aria-describedby="botname-description" />
+                <p className="description" id="botname-description">
+                  Shown in the chat window header.
                 </p>
               </td>
             </tr>
             <tr>
               <th scope="row">
-                <label htmlFor="rules">Answering rules</label>
+                <label htmlFor="greeting">Welcome message</label>
               </th>
               <td>
-                <textarea name="rules" id="rules" rows={10} cols={50} className="large-text code" defaultValue={chat.rules} aria-describedby="rules-description" />
-                <p className="description" id="rules-description">
-                  Write <code>{"{phone}"}</code> to insert the WhatsApp number from Contact Settings.
+                <textarea name="greeting" id="greeting" rows={3} cols={50} className="large-text" defaultValue={chat.greeting} required aria-describedby="greeting-description" />
+                <p className="description" id="greeting-description">
+                  The first message visitors see when they open the chat.
                 </p>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <label htmlFor="placeholder">Input placeholder</label>
+              </th>
+              <td>
+                <input name="placeholder" type="text" id="placeholder" defaultValue={chat.placeholder} className="regular-text" />
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <label htmlFor="systemPrompt">System prompt</label>
+              </th>
+              <td>
+                <textarea name="systemPrompt" id="systemPrompt" rows={24} cols={50} className="large-text code" defaultValue={chat.systemPrompt} required aria-describedby="prompt-description" />
+                <p className="description" id="prompt-description">
+                  The assistant&#8217;s instructions: who it is, what it knows, and how to answer. Write <code>{"{phone}"}</code> to
+                  insert the WhatsApp number from Contact Settings.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Site data</th>
+              <td>
+                <fieldset>
+                  <legend className="screen-reader-text">
+                    <span>Site data</span>
+                  </legend>
+                  <label htmlFor="includeSiteData">
+                    <input name="includeSiteData" type="checkbox" id="includeSiteData" defaultChecked={chat.includeSiteData} /> Also send
+                    the current products, projects, and contact details from the site
+                  </label>
+                  <p className="description">
+                    Keeps prices and contact details in sync with what you edit in the admin. Leave off if the system prompt
+                    already lists them.
+                  </p>
+                </fieldset>
               </td>
             </tr>
             <tr>
@@ -151,6 +184,9 @@ export default async function AdminChatPage() {
           <SubmitButton value="Save Changes" id="submit" />
         </p>
       </WpForm>
+
+      <h2 className="title">Connection test</h2>
+      <TestConnectionForm />
     </div>
   );
 }

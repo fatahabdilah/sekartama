@@ -10,8 +10,10 @@ const RATE_LIMITED = "Pesan Anda terlalu banyak dalam waktu singkat. Mohon tungg
 const MAX_INPUT_HEIGHT = 110;
 const HISTORY_LIMIT = 20;
 
-export default function ChatWidget({ greeting, phone }: { greeting: string; phone: string }) {
-  const fallback = `Maaf, Sekar sedang tidak bisa menjawab. Silakan hubungi kami langsung via WhatsApp di ${phone}.`;
+type Props = { botName: string; greeting: string; placeholder: string; phone: string };
+
+export default function ChatWidget({ botName, greeting, placeholder, phone }: Props) {
+  const fallback = `Maaf, ${botName} sedang tidak bisa menjawab. Silakan hubungi kami langsung via WhatsApp di ${phone}.`;
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{ role: "assistant", content: greeting }]);
   const [input, setInput] = useState("");
@@ -90,13 +92,13 @@ export default function ChatWidget({ greeting, phone }: { greeting: string; phon
         <div
           className={styles.panel}
           role="dialog"
-          aria-label="Chat dengan Sekar"
+          aria-label={`Chat dengan ${botName}`}
           onKeyDown={(event) => event.key === "Escape" && close()}
         >
           <div className={styles.header}>
             <Image src="/images/chat/sekar-42.svg" alt="" width={42} height={42} />
             <div className={styles.identity}>
-              <p className={styles.name}>Sekar</p>
+              <p className={styles.name}>{botName}</p>
               <p className={styles.status}>
                 <span className={styles.dot} />
                 Online — siap membantu
@@ -123,7 +125,7 @@ export default function ChatWidget({ greeting, phone }: { greeting: string; phon
             {loading && (
               <div className={styles.botRow}>
                 <Image src="/images/chat/sekar-30.svg" alt="" width={30} height={30} className={styles.avatar} />
-                <p className={`${styles.bubble} ${styles.bot} ${styles.typing}`} aria-label="Sekar sedang mengetik">
+                <p className={`${styles.bubble} ${styles.bot} ${styles.typing}`} aria-label={`${botName} sedang mengetik`}>
                   <span />
                   <span />
                   <span />
@@ -139,7 +141,7 @@ export default function ChatWidget({ greeting, phone }: { greeting: string; phon
               rows={1}
               value={input}
               maxLength={1000}
-              placeholder="Ketik pesan Anda..."
+              placeholder={placeholder}
               aria-label="Tulis pesan"
               onChange={(event) => {
                 setInput(event.target.value);
@@ -160,7 +162,7 @@ export default function ChatWidget({ greeting, phone }: { greeting: string; phon
         ref={toggleRef}
         type="button"
         className={styles.toggle}
-        aria-label={open ? "Tutup chat Sekar" : "Buka chat Sekar"}
+        aria-label={open ? `Tutup chat ${botName}` : `Buka chat ${botName}`}
         aria-expanded={open}
         onClick={() => (open ? close() : setOpen(true))}
       >

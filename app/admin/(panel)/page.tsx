@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ChatStatusNotice from "@/components/admin/wp/ChatStatusNotice";
 import Postbox from "@/components/admin/wp/Postbox";
 import { activityDate, plural } from "@/lib/admin-format";
 import { requireAdmin } from "@/lib/admin";
@@ -21,6 +22,7 @@ export default async function AdminDashboard() {
   return (
     <div className="wrap">
       <h1>Dashboard</h1>
+      <ChatStatusNotice supabase={supabase} />
 
       <div id="dashboard-widgets-wrap">
         <div id="dashboard-widgets" className="metabox-holder">

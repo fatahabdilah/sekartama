@@ -14,7 +14,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Header navItems={navItems} />
       <main>{children}</main>
       <Footer contact={contact} navItems={navItems} />
-      {chat.enabled && <ChatWidget greeting={chat.greeting} phone={contact.phone} />}
+      {chat.enabled && (
+        <ChatWidget botName={chat.botName} greeting={chat.greeting} placeholder={chat.placeholder} phone={contact.phone} />
+      )}
     </>
   );
 }

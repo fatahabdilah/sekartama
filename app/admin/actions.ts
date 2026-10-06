@@ -1,12 +1,15 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { refresh, updateTag } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin";
 import { plainText, sanitizeArticle } from "@/lib/html";
-import type { ChatConfig } from "@/lib/assistant";
-import { GEMINI_KEY } from "@/lib/secrets";
+import { buildSystemPrompt, type ChatConfig } from "@/lib/assistant";
+import { getChatConfig, getContact, getProductCategories, getProjects } from "@/lib/data";
+import { DEFAULT_GEMINI_MODEL } from "@/lib/gemini-models";
+import { generateReply, reportChatStatus } from "@/lib/gemini";
+import { GEMINI_KEY, getGeminiApiKey } from "@/lib/secrets";
 import type { ContactSettings } from "@/lib/site";
 import { REMEMBER_COOKIE } from "@/lib/supabase/cookies";
 import { CONTENT_TAG, isSupabaseConfigured } from "@/lib/supabase/env";
@@ -281,6 +284,8 @@ export async function saveProject(_: FormState, formData: FormData): Promise<For
     name,
     location: text(formData, "location"),
     image: text(formData, "image"),
+    date: text(formData, "project_date") || null,
+    description: text(formData, "description"),
     sort_order: int(formData, "menu_order"),
   };
 
@@ -343,11 +348,15 @@ export async function saveChat(_: FormState, formData: FormData): Promise<FormSt
     enabled: formData.get("enabled") === "on",
     model,
     temperature,
+    botName: text(formData, "botName"),
     greeting: text(formData, "greeting"),
-    companyInfo: text(formData, "companyInfo"),
-    rules: text(formData, "rules"),
+    placeholder: text(formData, "placeholder"),
+    systemPrompt: String(formData.get("systemPrompt") ?? "").trim(),
+    includeSiteData: formData.get("includeSiteData") === "on",
   };
-  if (!value.greeting) return { error: "Please enter a greeting." };
+  if (!value.botName) return { error: "Please enter the bot name." };
+  if (!value.greeting) return { error: "Please enter a welcome message." };
+  if (!value.systemPrompt) return { error: "Please enter a system prompt." };
 
   // Blank keeps the saved key; the checkbox removes it.
   const apiKey = text(formData, "gemini_api_key");
@@ -359,4 +368,36 @@ export async function saveChat(_: FormState, formData: FormData): Promise<FormSt
 
   const error = await saveSetting("chat", value);
   return error ? { error: error.message } : { message: "Settings saved." };
+}
+
+/** "Test connection" on the Chat AI page: one real Gemini call with the saved settings. */
+export async function testChatConnection(): Promise<FormState> {
+  await requireAdmin();
+  const [apiKey, config, categories, projects, contact] = await Promise.all([
+    getGeminiApiKey(),
+    getChatConfig(),
+    getProductCategories(),
+    getProjects(),
+    getContact(),
+  ]);
+  if (!apiKey) return { error: "No Gemini API key is set." };
+
+  const model = config.model || process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL;
+  const result = await generateReply({
+    apiKey,
+    model,
+    systemPrompt: buildSystemPrompt(config, categories, projects, contact),
+    temperature: config.temperature,
+    messages: [{ role: "user", content: "Halo" }],
+  });
+  await reportChatStatus("reply" in result ? "ok" : result.status, "reply" in result ? "" : result.detail, { force: true });
+  refresh();
+
+  if ("reply" in result) return { message: `Connection OK (${model}). Sample reply: “${result.reply.slice(0, 160)}”` };
+  const reasons = {
+    quota: "The Gemini quota is exhausted.",
+    invalid_key: "The Gemini API key was rejected.",
+    error: "The request to Gemini failed.",
+  };
+  return { error: `${reasons[result.status]} ${result.detail}` };
 }

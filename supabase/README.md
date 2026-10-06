@@ -3,7 +3,7 @@
 The admin panel lives at `/admin`. Without Supabase configured, the site serves the built-in content from `lib/` and `/admin` shows a setup notice.
 
 1. Create a project at https://supabase.com.
-2. In **SQL Editor**, run `migrations/0001_admin.sql`, `migrations/0002_secrets.sql`, then `seed.sql`. The seed imports the current blog posts, products, projects, contact info, and chat settings, and is safe to re-run.
+2. In **SQL Editor**, run `migrations/0001_admin.sql`, `migrations/0002_secrets.sql`, `migrations/0003_chat_status.sql`, then `seed.sql`. The seed imports the current blog posts, products, projects, contact info, and chat settings, and is safe to re-run.
 3. In **Authentication → Users**, click **Add user** and create the admin account (email + password).
    The `admin@sekartama-upvc.com` account already exists. It signs in with the username `admin`.
 4. Back in **SQL Editor**, run `grant-admin.sql`. It confirms the account's email and grants admin access. Edit the email in it to grant another user.

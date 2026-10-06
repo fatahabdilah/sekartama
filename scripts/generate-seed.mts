@@ -44,9 +44,9 @@ const lines = [
   "do $$ begin if not exists (select 1 from public.projects) then",
   ...defaultProjects.map(
     (p, i) =>
-      `  insert into public.projects (name, location, image, sort_order) values (${[p.name, p.location, p.image, i]
-        .map(q)
-        .join(", ")});`,
+      `  insert into public.projects (name, location, image, date, description, sort_order) values (${[
+        q(p.name), q(p.location), q(p.image), p.date ? q(p.date) : "null", q(p.description ?? ""), q(i),
+      ].join(", ")});`,
   ),
   "end if; end $$;",
   "",

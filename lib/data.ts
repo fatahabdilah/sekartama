@@ -103,7 +103,7 @@ export const getProjects = cache(async (): Promise<Project[]> => {
   if (!isSupabaseConfigured) return defaultProjects;
   const { data, error } = await createPublicClient()
     .from("projects")
-    .select("id, name, location, image")
+    .select("id, name, location, image, date, description")
     .order("sort_order")
     .order("created_at");
   if (error) {

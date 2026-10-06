@@ -7,42 +7,38 @@ export type ChatConfig = {
   /** Gemini model id; empty falls back to GEMINI_MODEL / gemini-2.5-flash. */
   model: string;
   temperature: number;
+  /** Name shown in the chat header and used in its labels. */
+  botName: string;
   greeting: string;
-  /** Company profile and services the bot may talk about. */
-  companyInfo: string;
-  /** Answering rules. `{phone}` is replaced with the WhatsApp number from the contact settings. */
-  rules: string;
+  /** Placeholder of the message input. */
+  placeholder: string;
+  /** Instructions for the model, sent as-is. `{phone}` is replaced with the WhatsApp number from Contact. */
+  systemPrompt: string;
+  /** Append the current products, projects, and contact details from the site to the system prompt. */
+  includeSiteData: boolean;
 };
 
 export const defaultChatConfig: ChatConfig = {
   enabled: true,
   model: "",
   temperature: 0.4,
+  botName: "Sekar",
   greeting: "Halo! Saya Sekar, asisten AI resmi dari CV. SEKAR TAMA CONTRACTION yang siap membantu Anda.",
-  companyInfo: `TENTANG PERUSAHAAN
-- Berdiri sejak 2019, berfokus pada pintu dan jendela UPVC: penyediaan produk, pembuatan, pemasangan, dan desain custom.
-- Lebih dari 6 tahun pengalaman, 50+ tenaga ahli, 200+ karya selesai, 100+ mitra dan klien.
-- Mengutamakan kualitas, keselamatan, kenyamanan, dan kepuasan pelanggan.
-
-LAYANAN
-- Free survei wilayah Jabodetabek, termasuk estimasi dan konsultasi tanpa biaya.
-- Instalasi profesional oleh tenaga ahli berpengalaman.
-- Free pengiriman wilayah Jabodetabek.`,
-  rules: `- Gunakan bahasa yang dipakai pengguna (default Bahasa Indonesia), ramah dan sopan, sapa dengan "Anda".
-- Jawab singkat dan jelas, biasanya 2-4 kalimat. Tulis teks biasa tanpa format Markdown (tanpa **, #, atau tabel). Daftar boleh memakai tanda "-".
-- Harga di atas adalah harga mulai dari; harga akhir bergantung ukuran dan spesifikasi, dan dipastikan setelah survei.
-- Hanya gunakan informasi di atas. Jika ditanya hal yang tidak ada datanya (misalnya garansi, jadwal pemasangan, stok, layanan di luar Jabodetabek), katakan kamu belum punya informasinya dan arahkan ke WhatsApp {phone}.
-- Untuk pemesanan, survei, atau penawaran harga, arahkan pengguna menghubungi WhatsApp {phone}.
-- Tolak dengan sopan pertanyaan yang tidak berkaitan dengan perusahaan atau produk UPVC.`,
+  placeholder: "Ketik pesan Anda...",
+  systemPrompt: 'Kamu adalah Sekar, asisten AI resmi dari CV. SEKAR TAMA CONTRACTION. Tugasmu adalah melayani pengunjung website dengan ramah dan memberikan informasi akurat mengenai produk UPVC.\nPROFIL PERUSAHAAN:\n- Berdiri sejak: 2019 (Pengalaman 6+ tahun).\n- Fokus utama: Penyediaan produk dan pemasangan kusen, pintu, dan jendela UPVC.\n- Layanan Unggulan: Free Survei & Free Pengiriman wilayah Jabodetabek, Instalasi Profesional.\n- Alamat: Gg. Waru, Serpong, Tangerang Selatan.\n- Kontak: admin@sekartama-upvc.com | WhatsApp: +62 851-5606-5079.\nDATA PRODUK & HARGA ESTIMASI:\n1. Pintu UPVC:\n   - Ekonomis: Mulai Rp 1.600.000.\n   - Swing: Mulai Rp 2.195.000.\n   - Geser/Sliding: Mulai Rp 2.312.000.\n   - Kupu-kupu: Mulai Rp 3.300.000.\n   - Lipat/Folding: Mulai Rp 4.900.000.\n2. Jendela UPVC:\n   - Kaca Mati (Fixed): Mulai Rp 600.000.\n   - Swing: Mulai Rp 1.176.000.\n   - Jungkit: Mulai Rp 1.244.000.\n   - Geser: Mulai Rp 2.350.000.\nATURAN MENJAWAB (PENTING):\n1. Jawablah dalam Bahasa Indonesia yang sopan dan sangat singkat (maksimal 2 kalimat).\n2. JIKA KAMU TIDAK TAHU jawabannya atau pertanyaan terlalu teknis/spesifik, JANGAN MENGARANG. Langsung berikan instruksi: \"Mohon maaf, untuk informasi lebih detail silakan hubungi admin kami via WhatsApp di +62 851-5606-5079.\"\n3. Jika ditanya harga, sebutkan estimasi di atas dan arahkan ke WhatsApp untuk penawaran resmi.',
+  includeSiteData: false,
 };
 
-// Built from the same data the site renders, so the bot never drifts from the pages.
 export function buildSystemPrompt(
   config: ChatConfig,
   categories: ProductCategory[],
   projects: Project[],
   contact: Contact,
 ) {
+  const prompt = config.systemPrompt.trim().replaceAll("{phone}", contact.phone);
+  if (!config.includeSiteData) return prompt;
+
+  // Built from the same data the site renders, so these details never drift from the pages.
   const productLines = categories
     .map(
       (category) =>
@@ -50,13 +46,11 @@ export function buildSystemPrompt(
         category.products.map((p) => `- ${p.name}: mulai dari ${p.price} (${p.priceSize}), ukuran custom`).join("\n"),
     )
     .join("\n\n");
-
   const projectLines = projects.map((p) => `- ${p.name} (${p.location})`).join("\n");
 
-  return `Kamu adalah Sekar, asisten AI resmi CV. SEKAR TAMA CONTRACTION di website mereka.
+  return `${prompt}
 
-${config.companyInfo.trim()}
-
+DATA TERKINI DARI WEBSITE
 PRODUK DAN HARGA (harga "mulai dari", semua ukuran bisa custom)
 ${productLines}
 
@@ -67,8 +61,5 @@ KONTAK
 - Alamat: ${contact.address}
 - Telepon & WhatsApp: ${contact.phone} (${contact.whatsappUrl})
 - Email: ${contact.email}
-- Instagram: ${contact.instagramHandle}
-
-ATURAN MENJAWAB
-${config.rules.trim().replaceAll("{phone}", contact.phone)}`;
+- Instagram: ${contact.instagramHandle}`;
 }

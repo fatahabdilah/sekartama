@@ -1,9 +1,9 @@
 import { buildSystemPrompt } from "@/lib/assistant";
 import { getChatConfig, getContact, getProductCategories, getProjects } from "@/lib/data";
 import { DEFAULT_GEMINI_MODEL } from "@/lib/gemini-models";
+import { generateReply, reportChatStatus, type ChatMessage } from "@/lib/gemini";
 import { getGeminiApiKey } from "@/lib/secrets";
 
-type ChatMessage = { role: "user" | "assistant"; content: string };
 
 const MAX_MESSAGES = 20;
 const MAX_CHARS = 1000;
@@ -53,40 +53,18 @@ export async function POST(request: Request) {
   const messages = parseMessages(await request.json().catch(() => null));
   if (!messages) return Response.json({ error: "invalid_request" }, { status: 400 });
 
-  // Gemini expects the conversation to open with a user turn.
-  const firstUser = messages.findIndex((m) => m.role === "user");
-  const model = config.model || process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL;
+  const result = await generateReply({
+    apiKey,
+    model: config.model || process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL,
+    systemPrompt: buildSystemPrompt(config, categories, projects, contact),
+    temperature: config.temperature,
+    messages,
+  });
 
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: buildSystemPrompt(config, categories, projects, contact) }] },
-        contents: messages.slice(firstUser).map((m) => ({
-          role: m.role === "assistant" ? "model" : "user",
-          parts: [{ text: m.content }],
-        })),
-        generationConfig: { temperature: config.temperature, maxOutputTokens: 1024 },
-      }),
-      signal: AbortSignal.timeout(25_000),
-    });
-
-    if (!res.ok) {
-      console.error("Gemini error", res.status, await res.text());
-      return Response.json({ error: "upstream_error" }, { status: 502 });
-    }
-
-    const data = await res.json();
-    const reply: string | undefined = data.candidates?.[0]?.content?.parts
-      ?.map((part: { text?: string }) => part.text ?? "")
-      .join("")
-      .trim();
-
-    if (!reply) return Response.json({ error: "empty_reply" }, { status: 502 });
-    return Response.json({ reply });
-  } catch (error) {
-    console.error("Gemini request failed", error);
-    return Response.json({ error: "upstream_error" }, { status: 502 });
+  if ("reply" in result) {
+    await reportChatStatus("ok");
+    return Response.json({ reply: result.reply });
   }
+  await reportChatStatus(result.status, result.detail);
+  return Response.json({ error: "upstream_error" }, { status: 502 });
 }
